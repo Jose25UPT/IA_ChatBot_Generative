@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot de IA</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .chat-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        .message {
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .user-message {
+            background-color: #d1e7dd;
+            text-align: right;
+        }
+        .bot-message {
+            background-color: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="chat-container">
+            <div id="messages" class="mb-4"></div>
+            <form id="chat-form">
+                <div class="input-group">
+                    <input type="text" id="user-input" class="form-control" placeholder="Escribe tu mensaje aquí...">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">Enviar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+            $('#chat-form').on('submit', function(event) {
+                event.preventDefault();
+                var userInput = $('#user-input').val();
+                $('#messages').append('<div class="message user-message">' + userInput + '</div>');
+                socket.emit('send_message', {message: userInput});
+                $('#user-input').val('');
+            });
+
+            socket.on('receive_message', function(data) {
+                $('#messages').append('<div class="message bot-message">' + data.message + '</div>');
+            });
+        });
+    </script>
+</body>
+</html>
