@@ -1,3 +1,5 @@
+#!/path/to/your/python/interpreter -u
+
 import streamlit as st
 import nltk
 from nltk.chat.util import Chat, reflections
